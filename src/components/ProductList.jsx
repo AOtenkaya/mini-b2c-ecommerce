@@ -1,19 +1,11 @@
-// src/components/ProductList.js
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../state/slices/productSlice";
+import React from "react";
+import { useSelector } from "react-redux";
 import ProductCard from "./ProductCard";
 
 const ProductList = () => {
-  const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.items);
-  const status = useSelector((state) => state.products.status);
-
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchProducts(""));
-    }
-  }, [status, dispatch]);
+  const { filteredItems, categoryFilter, searchText, status } = useSelector(
+    (state) => state.products
+  );
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -23,11 +15,43 @@ const ProductList = () => {
     return <div>Error loading products.</div>;
   }
 
+  const getFilterMessage = () => {
+    if (!searchText && !categoryFilter) {
+      return null; // No filters applied, no message.
+    }
+
+    if (filteredItems.length === 0) {
+      if (categoryFilter && searchText) {
+        return `We couldn't find any product for "${searchText}" inside the "${categoryFilter}" category.`;
+      } else if (categoryFilter) {
+        return `We couldn't find any product inside the "${categoryFilter}" category.`;
+      } else if (searchText) {
+        return `We couldn't find any product for "${searchText}".`;
+      }
+    } else {
+      if (categoryFilter && searchText) {
+        return `For the search "${searchText}" inside the "${categoryFilter}" category, we found ${filteredItems.length} item(s).`;
+      } else if (categoryFilter) {
+        return `Inside the "${categoryFilter}" category, we found ${filteredItems.length} item(s).`;
+      } else if (searchText) {
+        return `For the search "${searchText}", we found ${filteredItems.length} item(s).`;
+      }
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <div className="p-6">
+      {/* Conditional Filter Message */}
+      {getFilterMessage() && (
+        <p className="mb-6 text-gray-600">{getFilterMessage()}</p>
+      )}
+
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {filteredItems.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
     </div>
   );
 };
