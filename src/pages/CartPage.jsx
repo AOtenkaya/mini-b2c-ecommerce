@@ -1,30 +1,29 @@
+// src/pages/CartPage.jsx
 import React from "react";
 import { useSelector } from "react-redux";
 import CartItem from "../components/CartItem";
 import CartSummary from "../components/CartSummary";
 
 const CartPage = () => {
-  const cartItems = useSelector((state) => state.cart.items);
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p className="text-xl">Your cart is empty.</p>
-      </div>
-    );
-  }
+  const cartProducts = useSelector((state) => state.cart.products);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto py-6">
-        <h1 className="text-4xl font-bold mb-6">Your Cart</h1>
-        <div className="grid gap-6">
-          {cartItems.map((item) => (
-            <CartItem key={item.id} item={item} />
-          ))}
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">Your Shopping Cart</h1>
+      {cartProducts.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Cart Items */}
+          <div className="lg:col-span-2 space-y-4">
+            {cartProducts.map((item) => (
+              <CartItem key={item.id} item={item} />
+            ))}
+          </div>
+          {/* Cart Summary */}
+          <CartSummary />
         </div>
-        <CartSummary />
-      </div>
+      )}
     </div>
   );
 };

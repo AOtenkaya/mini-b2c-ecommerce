@@ -1,24 +1,26 @@
+// src/components/CartSummary.jsx
 import React from "react";
 import { useSelector } from "react-redux";
 
 const CartSummary = () => {
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartProducts = useSelector((state) => state.cart.products);
 
-  // Calculate the total price
-  const totalPrice = cartItems
-    .reduce((total, item) => total + item.price * item.quantity, 0)
-    .toFixed(2);
+  const totalPrice = cartProducts.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg mt-6">
-      <h2 className="text-2xl font-semibold mb-4">Cart Summary</h2>
-      <div className="flex justify-between mb-4">
-        <span>Total:</span>
-        <span className="font-semibold">${totalPrice}</span>
+    <div className="bg-white h-fit p-4 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-4">Cart Summary</h2>
+      <div className="flex justify-between mb-2">
+        <span>Total Items:</span>
+        <span>{cartProducts.length}</span>
       </div>
-      <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
-        Checkout
-      </button>
+      <div className="flex justify-between mb-4">
+        <span>Total Price:</span>
+        <span>${totalPrice.toFixed(2)}</span>
+      </div>
     </div>
   );
 };
