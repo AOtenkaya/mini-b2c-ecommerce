@@ -4,7 +4,6 @@ const axiosInstance = axios.create({
   baseURL: "https://fakestoreapi.com",
 });
 
-// Error handling function
 const handleError = (error) => {
   if (error.response) {
     console.error("Response error:", error.response);
@@ -20,7 +19,7 @@ const handleError = (error) => {
   }
 };
 
-export const fetchProducts = async (searchQuery = "") => {
+export const fetchProductsAPI = async (searchQuery = "") => {
   try {
     const response = await axiosInstance.get(`/products`, {
       params: { search: searchQuery },
@@ -31,30 +30,19 @@ export const fetchProducts = async (searchQuery = "") => {
   }
 };
 
-export const addToCart = async (product) => {
+export const fetchProductDetailAPI = async (id) => {
   try {
-    const response = await axiosInstance.post(`/cart`, product);
+    const response = await axiosInstance.get(`/products/${id}`);
     return response.data;
   } catch (error) {
-    handleError(error);
+    console.error("Error fetching product:", error);
+    throw error;
   }
 };
 
-export const updateCartQuantity = async (cartItemId, quantity) => {
+export const getCategories = async () => {
   try {
-    const response = await axiosInstance.put(`/cart/${cartItemId}`, {
-      quantity,
-    });
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
-};
-
-// Delete cart item
-export const deleteFromCart = async (cartItemId) => {
-  try {
-    const response = await axiosInstance.delete(`/cart/${cartItemId}`);
+    const response = await axiosInstance.get(`/products/categories`);
     return response.data;
   } catch (error) {
     handleError(error);

@@ -1,84 +1,86 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  addToCart as addToCartApi,
-  updateCartQuantity as updateCartQuantityApi,
-  deleteFromCart as deleteFromCartApi,
-} from "../../services/api";
+import { createSlice } from "@reduxjs/toolkit";
 
-export const addToCart = createAsyncThunk("cart/addToCart", async (product) => {
-  const addedProduct = await addToCartApi(product);
-  return addedProduct;
-});
+// Initial cart state
+const initialState = {
+  id: 1,
+  userId: 1,
+  products: [],
+};
 
-export const updateCartQuantity = createAsyncThunk(
-  "cart/updateCartQuantity",
-  async ({ cartItemId, quantity }) => {
-    const updatedItem = await updateCartQuantityApi(cartItemId, quantity);
-    return updatedItem;
-  }
-);
+// Helper functions to manage localStorage
+const getCartFromLocalStorage = () => {
+  const cart = localStorage.getItem("cart");
+  return cart ? JSON.parse(cart) : initialState;
+};
 
-export const deleteFromCart = createAsyncThunk(
-  "cart/deleteFromCart",
-  async (cartItemId) => {
-    await deleteFromCartApi(cartItemId);
-    return cartItemId;
-  }
-);
+const saveCartToLocalStorage = (cart) => {
+  localStorage.setItem("cart", JSON.stringify(cart));
+};
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState: {
-    items: [],
-    status: "idle",
-    error: null,
-  },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(addToCart.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(addToCart.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.items.push(action.payload);
-      })
-      .addCase(addToCart.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      });
+  initialState: getCartFromLocalStorage(), // Load cart from localStorage initially
+  reducers: {
+    // Add product to cart
+    addToCart: (state, action) => {
+      const newProduct = action.payload;
+      const existingProduct = state.products.find(
+        (product) => product.id === newProduct.id
+      );
 
-    builder
-      .addCase(updateCartQuantity.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(updateCartQuantity.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        const index = state.items.findIndex(
-          (item) => item.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.items[index] = action.payload;
-        }
-      })
-      .addCase(updateCartQuantity.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      });
+      if (existingProduct) {
+        // If the product exists, just increase the quantity
+        existingProduct.quantity += 1;
+      } else {
+        // Otherwise, add the new product to the cart with quantity 1
+        state.products.push({ ...newProduct, quantity: 1 });
+      }
 
-    builder
-      .addCase(deleteFromCart.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(deleteFromCart.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.items = state.items.filter((item) => item.id !== action.payload);
-      })
-      .addCase(deleteFromCart.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      });
+      // Save updated cart to localStorage
+      saveCartToLocalStorage(state);
+    },
+
+    // Increase quantity of a specific product in the cart
+    increaseQuantity: (state, action) => {
+      const productId = action.payload;
+      const product = state.products.find((p) => p.id === productId);
+      if (product) {
+        product.quantity += 1;
+        saveCartToLocalStorage(state); // Save after quantity change
+      }
+    },
+
+    // Decrease quantity of a specific product in the cart
+    decreaseQuantity: (state, action) => {
+      const productId = action.payload;
+      const product = state.products.find((p) => p.id === productId);
+      if (product && product.quantity > 1) {
+        product.quantity -= 1;
+        saveCartToLocalStorage(state); // Save after quantity change
+      }
+    },
+
+    // Remove product from the cart
+    removeFromCart: (state, action) => {
+      const productId = action.payload;
+      state.products = state.products.filter((p) => p.id !== productId);
+      saveCartToLocalStorage(state); // Save after removal
+    },
+
+    // Clear entire cart
+    clearCart: (state) => {
+      state.products = [];
+      saveCartToLocalStorage(state); // Save after clearing
+    },
   },
 });
+
+export const {
+  addToCart,
+  increaseQuantity,
+  decreaseQuantity,
+  removeFromCart,
+  clearCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
