@@ -1,38 +1,60 @@
-// src/components/ProductCard.jsx
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../state/slices/cartSlice";
+import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
+  const { theme } = useContext(ThemeContext); // Access the current theme
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (event) => {
     dispatch(addToCart(product));
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow">
-      <img
-        src={product.image}
-        alt={product.title}
-        className="w-full h-64 object-scale-down rounded-lg"
-      />
+    <div
+      className={`group ${
+        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+      } rounded-lg shadow-lg p-4 hover:shadow-2xl transition-all`}
+    >
+      <Link to={`/products/${product.id}`}>
+        <img
+          src={product.image}
+          alt={product.title}
+          className="w-full h-64 object-fill rounded-lg"
+        />
 
-      <div className="mt-4">
-        <Link to={`/products/${product.id}`}>
-          <h3 className="text-lg font-semibold truncate">{product.title}</h3>
-        </Link>
+        <div className="mt-4">
+          <h3
+            className={`${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            } text-lg font-semibold truncate`}
+          >
+            {product.title}
+          </h3>
 
-        <p className="text-gray-600 mt-2">${product.price}</p>
+          <p
+            className={`${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            } mt-2`}
+          >
+            ${product.price}
+          </p>
+        </div>
+      </Link>
 
-        <button
-          onClick={handleAddToCart}
-          className="mt-4 w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Add to Cart
-        </button>
-      </div>
+      {/* Button */}
+      <button
+        onClick={handleAddToCart}
+        className={`${
+          theme === "dark"
+            ? "bg-orange-500 hover:bg-orange-600"
+            : "bg-orange-500 hover:bg-orange-600"
+        } group-hover:visible mt-4 w-full text-white p-2 rounded-lg transition-colors invisible`}
+      >
+        Add to Cart
+      </button>
     </div>
   );
 };
