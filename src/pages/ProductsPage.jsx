@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
 import ProductList from "../components/ProductList";
 import ProductFilter from "../components/ProductFilter";
-import { fetchProducts } from "../state/slices/productSlice";
+import { fetchProducts } from "../store/slices/productSlice";
 import { ThemeContext } from "../context/ThemeContext";
 
 const ProductsPage = () => {

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../state/slices/cartSlice";
+import { addToCart } from "../store/slices/cartSlice";
 import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
 
 const ProductCard = ({ product }) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCategoryFilter, setSearchText } from "../state/slices/productSlice";
+import { setCategoryFilter, setSearchText } from "../store/slices/productSlice";
 import { getCategories } from "../services/api";
 import { ThemeContext } from "../context/ThemeContext";
 

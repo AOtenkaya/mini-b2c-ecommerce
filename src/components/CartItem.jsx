@@ -4,7 +4,7 @@ import {
   increaseQuantity,
   decreaseQuantity,
   removeFromCart,
-} from "../state/slices/cartSlice";
+} from "../store/slices/cartSlice";
 import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { FaTrash } from "react-icons/fa";

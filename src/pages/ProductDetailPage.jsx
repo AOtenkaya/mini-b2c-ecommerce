@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProductDetailAPI } from "../services/api"; // Your API method for fetching product by ID
 import { useDispatch } from "react-redux";
-import { addToCart } from "../state/slices/cartSlice";
+import { addToCart } from "../store/slices/cartSlice";
 import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
 
 const ProductPage = () => {
