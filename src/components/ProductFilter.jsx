@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategoryFilter, setSearchText } from "../state/slices/productSlice";
 import { getCategories } from "../services/api";
+import { ThemeContext } from "../context/ThemeContext";
 
 const ProductFilter = () => {
+  const { theme } = useContext(ThemeContext); // Access theme from context
   const dispatch = useDispatch();
   const { categoryFilter, searchText } = useSelector((state) => state.products);
   const [categories, setCategories] = useState([]);
@@ -21,13 +23,11 @@ const ProductFilter = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
       dispatch(setSearchText(searchValue));
-    }, 1000);
-
-    return () => clearTimeout(delayDebounce);
-  }, [searchValue, dispatch]);
+    }
+  };
 
   const handleCategorySelect = (category) => {
     if (categoryFilter === category) return;
@@ -40,8 +40,18 @@ const ProductFilter = () => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4">
-      <h2 className="text-lg font-bold mb-4">Filters</h2>
+    <div
+      className={`${
+        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+      } shadow-md rounded-lg p-4 h-fit`}
+    >
+      <h2
+        className={`${
+          theme === "dark" ? "text-orange-400" : "text-orange-600"
+        } text-lg font-bold mb-4`}
+      >
+        Filters
+      </h2>
 
       {/* Search Input */}
       <div className="mb-6 relative">
@@ -50,12 +60,19 @@ const ProductFilter = () => {
           placeholder="Search for products..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onKeyDown={handleKeyDown} // Trigger filtering on Enter key
+          className={`${
+            theme === "dark"
+              ? "bg-gray-700 text-white border-gray-600 focus:ring-orange-500"
+              : "bg-white text-gray-900 border-gray-300 focus:ring-orange-500"
+          } w-full p-2 border rounded-md focus:outline-none focus:ring-2`}
         />
         {searchValue && (
           <button
             onClick={clearSearchText}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-800"
+            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
+              theme === "dark" ? "text-white" : "text-gray-500"
+            } hover:text-gray-800`}
           >
             &#x2715;
           </button>
@@ -66,17 +83,30 @@ const ProductFilter = () => {
       <ul>
         <li
           className={`cursor-pointer mb-2 ${
-            !categoryFilter ? "font-bold text-blue-600" : ""
+            !categoryFilter
+              ? `${
+                  theme === "dark" ? "text-orange-400" : "text-orange-600"
+                } font-bold`
+              : ""
           }`}
           onClick={() => handleCategorySelect(null)}
         >
           All Categories
         </li>
+
         {categories.map((category) => (
           <li
             key={category}
-            className={`cursor-pointer hover:text-blue-600 mb-2 ${
-              categoryFilter === category ? "font-bold text-blue-600" : ""
+            className={`cursor-pointer hover:${
+              theme === "dark" ? "text-orange-400" : "text-orange-600"
+            } mb-2 ${
+              categoryFilter === category
+                ? `${
+                    theme === "dark"
+                      ? "font-bold text-orange-400"
+                      : "font-bold text-orange-600"
+                  }`
+                : ""
             }`}
             onClick={() => handleCategorySelect(category)}
           >
