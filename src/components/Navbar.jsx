@@ -11,7 +11,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`flex h-14 justify-between items-center px-6 py-4 shadow-md ${
+      className={`flex h-14 justify-between items-center px-6 py-4 shadow-2xl shadow-black ${
         theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
@@ -24,9 +24,9 @@ const Navbar = () => {
         } hover:opacity-80`}
       >
         {theme === "dark" ? (
-          <FaSun className="h-5 w-5" /> // Light mode icon (sun)
+          <FaSun className="h-5 w-5" />
         ) : (
-          <FaMoon className="h-5 w-5" /> // Dark mode icon (moon)
+          <FaMoon className="h-5 w-5" />
         )}
       </button>
 
