@@ -48,3 +48,14 @@ export const getCategories = async () => {
     handleError(error);
   }
 };
+
+export const updateCartOnServer = async (cart) => {
+  // interestingly even the cart we sent here is a proxy object just like on cartSlice we don't need to convert to object
+  // with current on slice or stringifying here because axios itself converts it with JSON.stringify
+  try {
+    const response = await axiosInstance.put(`/carts/1`, cart);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

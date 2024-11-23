@@ -1,4 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { updateCartOnServer } from "../../services/api";
+import { toast } from "react-toastify";
+import { current } from "immer";
 
 // Initial cart state
 const initialState = {
@@ -17,9 +20,22 @@ const saveCartToLocalStorage = (cart) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
 
+// Create async thunk to update the cart on the server
+export const updateCart = createAsyncThunk(
+  "cart/updateCart",
+  async (cart, { rejectWithValue }) => {
+    try {
+      const response = await updateCartOnServer(cart);
+      return response; // Return the successful response data
+    } catch (error) {
+      return rejectWithValue(error.message); // Return error message on failure
+    }
+  }
+);
+
 const cartSlice = createSlice({
   name: "cart",
-  initialState: getCartFromLocalStorage(), // Load cart from localStorage initially
+  initialState: getCartFromLocalStorage(),
   reducers: {
     // Add product to cart
     addToCart: (state, action) => {
@@ -29,15 +45,23 @@ const cartSlice = createSlice({
       );
 
       if (existingProduct) {
-        // If the product exists, just increase the quantity
         existingProduct.quantity += 1;
       } else {
-        // Otherwise, add the new product to the cart with quantity 1
         state.products.push({ ...newProduct, quantity: 1 });
       }
 
-      // Save updated cart to localStorage
-      saveCartToLocalStorage(state);
+      const plainCart = current(state); // Convert proxy to plain object
+
+      // Dispatch updateCart to sync with the server
+      updateCartOnServer(state)
+        .then(() => {
+          saveCartToLocalStorage(plainCart);
+          toast.success("Cart updated successfully!");
+        })
+        .catch(() => {
+          console.log("catch");
+          toast.error("Failed to update cart.");
+        });
     },
 
     // Increase quantity of a specific product in the cart
@@ -46,8 +70,19 @@ const cartSlice = createSlice({
       const product = state.products.find((p) => p.id === productId);
       if (product) {
         product.quantity += 1;
-        saveCartToLocalStorage(state); // Save after quantity change
       }
+
+      const plainCart = current(state); // Convert proxy to plain object
+
+      // Dispatch updateCart to sync with the server
+      updateCartOnServer(state)
+        .then(() => {
+          saveCartToLocalStorage(plainCart);
+          toast.success("Cart updated successfully!");
+        })
+        .catch(() => {
+          toast.error("Failed to update cart.");
+        });
     },
 
     // Decrease quantity of a specific product in the cart
@@ -56,31 +91,60 @@ const cartSlice = createSlice({
       const product = state.products.find((p) => p.id === productId);
       if (product && product.quantity > 1) {
         product.quantity -= 1;
-        saveCartToLocalStorage(state); // Save after quantity change
       }
+
+      const plainCart = current(state); // Convert proxy to plain object
+
+      // Dispatch updateCart to sync with the server
+      updateCartOnServer(state)
+        .then(() => {
+          saveCartToLocalStorage(plainCart);
+          toast.success("Cart updated successfully!");
+        })
+        .catch(() => {
+          toast.error("Failed to update cart.");
+        });
     },
 
     // Remove product from the cart
     removeFromCart: (state, action) => {
+      const rollbackCart = current(state); // Convert proxy to plain object
+
       const productId = action.payload;
       state.products = state.products.filter((p) => p.id !== productId);
-      saveCartToLocalStorage(state); // Save after removal
-    },
 
-    // Clear entire cart
-    clearCart: (state) => {
-      state.products = [];
-      saveCartToLocalStorage(state); // Save after clearing
+      const plainCart = current(state); // Convert proxy to plain object
+
+      // Dispatch updateCart to sync with the server
+      updateCartOnServer(state)
+        .then(() => {
+          saveCartToLocalStorage(plainCart);
+          toast.success("Cart updated successfully!");
+        })
+        .catch(() => {
+          toast.error("Failed to update cart.");
+        });
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateCart.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateCart.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Once the cart is updated on the server, save it to localStorage
+        saveCartToLocalStorage(state);
+        toast.success("Cart updated successfully!");
+      })
+      .addCase(updateCart.rejected, (state, action) => {
+        state.status = "failed";
+        toast.error(action.payload || "Failed to update cart.");
+      });
   },
 });
 
-export const {
-  addToCart,
-  increaseQuantity,
-  decreaseQuantity,
-  removeFromCart,
-  clearCart,
-} = cartSlice.actions;
+export const { addToCart, increaseQuantity, decreaseQuantity, removeFromCart } =
+  cartSlice.actions;
 
 export default cartSlice.reducer;

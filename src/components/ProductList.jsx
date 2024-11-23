@@ -17,7 +17,7 @@ const ProductList = () => {
 
   const getFilterMessage = () => {
     if (!searchText && !categoryFilter) {
-      return null; // No filters applied, no message.
+      return null;
     }
 
     if (filteredItems.length === 0) {
@@ -40,7 +40,7 @@ const ProductList = () => {
   };
 
   return (
-    <div className="p-6">
+    <div>
       {/* Conditional Filter Message */}
       {getFilterMessage() && (
         <p className="mb-6 text-gray-600">{getFilterMessage()}</p>
