@@ -4,7 +4,6 @@ import { fetchProductDetailAPI } from "../services/api"; // Your API method for 
 import { useDispatch } from "react-redux";
 import { addToCart } from "../state/slices/cartSlice";
 import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
-import { toast } from "react-toastify"; // Import toast
 
 const ProductPage = () => {
   const { id } = useParams(); // Get the dynamic "id" from the URL
@@ -15,7 +14,6 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     dispatch(addToCart(product));
-    toast.success("Product added to cart!");
   };
 
   useEffect(() => {
