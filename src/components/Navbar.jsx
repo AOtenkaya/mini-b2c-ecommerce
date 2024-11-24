@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`flex h-14 justify-between items-center px-6 py-4 shadow-md ${themeStyles.navbar}`}
+      className={`sticky top-0 z-50 flex h-14 justify-between items-center px-6 py-4 shadow-md ${themeStyles.navbar}`}
     >
       {/* Theme toggle button */}
       <button
