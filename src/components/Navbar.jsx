@@ -35,9 +35,9 @@ const Navbar = () => {
 
       {/* Navigation links */}
       <div className="flex">
-        {location.pathname !== "/products" && (
+        {location.pathname !== "/" && (
           <div className="text-xl font-bold mx-6">
-            <Link to="/products" className="hover:underline">
+            <Link to="/" className="hover:underline">
               Products
             </Link>
           </div>

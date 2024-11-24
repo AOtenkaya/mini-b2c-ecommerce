@@ -54,7 +54,7 @@ const CartItem = React.memo(({ item }) => {
 
         {/* Product Title and Price */}
         <div className="flex-1">
-          <Link to={`/products/${item.id}`} className="block">
+          <Link to={`/product/${item.id}`} className="block">
             <h2 className="text-base md:text-lg font-semibold w-full break-words whitespace-normal">
               {item.title}
             </h2>

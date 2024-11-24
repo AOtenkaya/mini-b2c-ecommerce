@@ -1,10 +1,5 @@
 import React, { useContext } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -27,9 +22,8 @@ const App = () => {
         {/* Simplified theme application */}
         <Navbar />
         <Routes>
-          <Route path="/" element={<Navigate to="/products" />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/" element={<ProductsPage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>
         {/* Toast Container with Dynamic Theme */}

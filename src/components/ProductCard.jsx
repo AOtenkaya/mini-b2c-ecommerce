@@ -27,7 +27,7 @@ const ProductCard = ({ product }) => {
     <div
       className={`group ${themeStyles.cardBackground} rounded-lg shadow-lg p-4 hover:shadow-2xl transition-all`}
     >
-      <Link to={`/products/${product.id}`}>
+      <Link to={`/product/${product.id}`}>
         <img
           src={product.image}
           alt={product.title}

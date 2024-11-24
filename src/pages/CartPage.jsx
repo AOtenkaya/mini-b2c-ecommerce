@@ -37,10 +37,7 @@ const CartPage = () => {
           <p className="text-lg mb-2">Your cart is empty right now.</p>
           <p className="text-lg">
             You can go to{" "}
-            <Link
-              to="/products"
-              className={`font-bold ${themeClasses.linkColor}`}
-            >
+            <Link to="/" className={`font-bold ${themeClasses.linkColor}`}>
               Products
             </Link>{" "}
             and start shopping.
