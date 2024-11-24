@@ -20,6 +20,8 @@ const CartItem = React.memo(({ item }) => {
   const handleDecrease = () => {
     if (item.quantity > 1) {
       dispatch(decreaseQuantity(item.id));
+    } else {
+      dispatch(removeFromCart(item.id));
     }
   };
 
