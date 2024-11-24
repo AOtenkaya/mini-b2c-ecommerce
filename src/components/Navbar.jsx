@@ -11,7 +11,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`flex h-14 justify-between items-center px-6 py-4 shadow-2xl shadow-black ${
+      className={`flex h-14 justify-between items-center px-6 py-4 shadow-md ${
         theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
