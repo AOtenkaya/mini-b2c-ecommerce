@@ -1,27 +1,20 @@
-import React, { useEffect, useState, useContext } from "react";
+// src/components/ProductFilter.js
+import React, { useState, useContext, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategoryFilter, setSearchText } from "../store/slices/productSlice";
-import { getCategories } from "../services/api";
 import { ThemeContext } from "../context/ThemeContext";
+import { getCategories } from "../services/api"; // Assuming getCategories is your API function
+import Loader from "./shared/Loader"; // Path to your Loader component
+import { createResource } from "../utils/createResource";
+
+// Wrap getCategories with createResource
+const categoryResource = createResource(getCategories);
 
 const ProductFilter = () => {
   const { theme } = useContext(ThemeContext); // Access theme from context
   const dispatch = useDispatch();
   const { categoryFilter, searchText } = useSelector((state) => state.products);
-  const [categories, setCategories] = useState([]);
   const [searchValue, setSearchValue] = useState(searchText);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categoryList = await getCategories();
-        setCategories(categoryList);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -38,6 +31,8 @@ const ProductFilter = () => {
     setSearchValue("");
     dispatch(setSearchText(""));
   };
+
+  const categories = categoryResource.read(); // This will suspend if categories are not ready
 
   return (
     <div
@@ -80,40 +75,46 @@ const ProductFilter = () => {
       </div>
 
       {/* Category List */}
-      <ul>
-        <li
-          className={`cursor-pointer mb-2 ${
-            !categoryFilter
-              ? `${
-                  theme === "dark" ? "text-orange-400" : "text-orange-600"
-                } font-bold`
-              : ""
-          }`}
-          onClick={() => handleCategorySelect(null)}
-        >
-          All Categories
-        </li>
-
-        {categories.map((category) => (
+      <Suspense
+        fallback={
+          <Loader message="Fetching product categories, please wait..." />
+        }
+      >
+        <ul>
           <li
-            key={category}
-            className={`cursor-pointer hover:${
-              theme === "dark" ? "text-orange-400" : "text-orange-600"
-            } mb-2 ${
-              categoryFilter === category
+            className={`cursor-pointer mb-2 ${
+              !categoryFilter
                 ? `${
-                    theme === "dark"
-                      ? "font-bold text-orange-400"
-                      : "font-bold text-orange-600"
-                  }`
+                    theme === "dark" ? "text-orange-400" : "text-orange-600"
+                  } font-bold`
                 : ""
             }`}
-            onClick={() => handleCategorySelect(category)}
+            onClick={() => handleCategorySelect(null)}
           >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+            All Categories
           </li>
-        ))}
-      </ul>
+
+          {categories.map((category) => (
+            <li
+              key={category}
+              className={`cursor-pointer hover:${
+                theme === "dark" ? "text-orange-400" : "text-orange-600"
+              } mb-2 ${
+                categoryFilter === category
+                  ? `${
+                      theme === "dark"
+                        ? "font-bold text-orange-400"
+                        : "font-bold text-orange-600"
+                    }`
+                  : ""
+              }`}
+              onClick={() => handleCategorySelect(category)}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </li>
+          ))}
+        </ul>
+      </Suspense>
     </div>
   );
 };
