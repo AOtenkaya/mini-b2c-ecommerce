@@ -23,11 +23,6 @@ const ProductList = () => {
     const categoryFilterExists =
       categoryFilter && categoryFilter.trim().length > 0;
 
-    // Simplified conditions to check
-    console.log("itemCount:", itemCount);
-    console.log("categoryFilterExists:", categoryFilterExists);
-    console.log("searchTextExists:", searchTextExists);
-
     switch (true) {
       case itemCount === 0 && categoryFilterExists && searchTextExists:
         return `We couldn't find any product for "${searchText}" inside the "${categoryFilter}" category.`;
