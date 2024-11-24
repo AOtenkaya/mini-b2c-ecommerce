@@ -19,7 +19,7 @@ const ProductDetails = ({ productResource, onAddToCart }) => {
           <img
             src={product.image}
             alt={product.title}
-            className="w-full h-[50rem] object-fill rounded-lg shadow-lg"
+            className="w-full max-h-[500px] object-contain rounded-lg shadow-lg"
           />
         </div>
 
