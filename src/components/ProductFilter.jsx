@@ -1,4 +1,4 @@
-import React, { useState, useContext, Suspense } from "react";
+import React, { useState, useEffect, useContext, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategoryFilter, setSearchText } from "../store/slices/productSlice";
 import { ThemeContext } from "@/context/ThemeContext";
@@ -32,6 +32,14 @@ const ProductFilter = () => {
   };
 
   const categories = categoryResource.read(); // This will suspend if categories are not ready
+
+  useEffect(() => {
+    // Clear filters when the component unmounts or on route change
+    return () => {
+      dispatch(setSearchText(""));
+      dispatch(setCategoryFilter(null));
+    };
+  }, [location, dispatch]);
 
   const themeStyles = {
     input:
