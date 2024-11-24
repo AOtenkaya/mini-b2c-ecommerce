@@ -1,4 +1,10 @@
-import React, { useContext, Suspense, useMemo, useState } from "react";
+import React, {
+  useContext,
+  useCallback,
+  Suspense,
+  useMemo,
+  useState,
+} from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/slices/cartSlice";
@@ -27,9 +33,14 @@ const ProductDetailPage = () => {
     });
   }, [id]);
 
-  const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
-  };
+  // this method is not an expensive method but since we send it as prop even though
+  // we dont have any re-render logic here we still can use useCallback for the methods we send as prop
+  const handleAddToCart = useCallback(
+    (product) => {
+      dispatch(addToCart(product));
+    },
+    [dispatch] // `dispatch` is the dependency, it won't change between renders
+  );
 
   if (error) {
     return (
