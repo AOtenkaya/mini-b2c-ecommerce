@@ -41,7 +41,7 @@ const ProductCard = ({ product }) => {
             {product.title}
           </h3>
 
-          <p className={`${themeStyles.priceColor} mt-2 text-xl font-bold`}>
+          <p className={`${themeStyles.priceColor} mt-2 text-md font-bold`}>
             ${product.price}
           </p>
         </div>
