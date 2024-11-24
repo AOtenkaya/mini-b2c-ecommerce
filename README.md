@@ -21,6 +21,8 @@ A feature-rich and responsive e-commerce application built with **Vite** and **R
 ## Notes
 The external API used (https://fakestoreapi.com/docs) for products and cart information does not support persistent data storage. As a result, cart functionality is handled entirely in the client-side Redux store and synchronized with `localStorage`.
 
+NOTE: The api also returns 413 error when you added more then 20-30 products to your cart and not even let remove and product. Since we only hold cart data on localStorage you need to clear localStorage to use cart functionality again.
+
 ## Live Demo
 Explore the live version of the project here:  
 [Mini B2C E-commerce](https://aotenkaya.github.io/mini-b2c-ecommerce/)
