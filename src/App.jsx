@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -16,7 +16,7 @@ const App = () => {
     theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"; // Centralized theming logic
 
   return (
-    <Router basename={import.meta.env.VITE_APP_BASE_PATH}>
+    <Router>
       <div className={`min-h-screen ${themeClasses}`}>
         {" "}
         {/* Simplified theme application */}

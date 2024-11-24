@@ -4,7 +4,7 @@ import { fileURLToPath, URL } from "node:url";
 import tailwindcss from "tailwindcss";
 
 export default defineConfig({
-  base: process.env.VITE_APP_BASE_PATH || "/", // Default to '/' for development
+  base: "/mini-b2c-ecommerce/", // Default to '/' for development
   plugins: [react()],
   css: {
     postcss: {
