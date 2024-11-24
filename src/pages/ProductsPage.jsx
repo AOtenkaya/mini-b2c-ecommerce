@@ -27,18 +27,13 @@ const ProductsPage = () => {
     >
       <div className="container mx-auto py-6 flex flex-col md:flex-row gap-6">
         <aside
-          className={`w-full md:w-1/4 p-4 ${themeClasses.bgColor} rounded-lg shadow-lg`}
+          className={`w-full md:w-1/4 p-4 ${themeClasses.bgColor} rounded-lg shadow-lg h-fit`}
         >
           <ProductFilter />
         </aside>
         <main
           className={`w-full md:w-3/4 p-4 ${themeClasses.bgColor} rounded-lg shadow-lg`}
         >
-          <h1
-            className={`text-4xl font-bold mb-6 ${themeClasses.headingColor}`}
-          >
-            Our Products
-          </h1>
           <ProductList />
         </main>
       </div>
