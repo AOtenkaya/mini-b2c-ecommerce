@@ -1,11 +1,10 @@
-// src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
 import { Provider } from "react-redux";
-import store from "./store";
-import { ThemeProvider } from "./context/ThemeContext.jsx";
+import "./index.css";
+import App from "@/App"; // Simplified import using @/
+import store from "@/store"; // Simplified import using @/
+import { ThemeProvider } from "@/context/ThemeContext"; // Simplified import using @/
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

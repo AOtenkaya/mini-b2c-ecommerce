@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useSelector } from "react-redux";
-import { ThemeContext } from "../context/ThemeContext";
+import { ThemeContext } from "@/context/ThemeContext";
 
 const CartSummary = () => {
   const { theme } = useContext(ThemeContext);
@@ -11,17 +11,17 @@ const CartSummary = () => {
     0
   );
 
+  const themeStyles = {
+    backgroundColor:
+      theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800",
+    titleColor: theme === "dark" ? "text-orange-400" : "text-orange-600",
+  };
+
   return (
     <div
-      className={`h-fit p-4 rounded-lg shadow-md ${
-        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800"
-      }`}
+      className={`h-fit p-4 rounded-lg shadow-md ${themeStyles.backgroundColor}`}
     >
-      <h2
-        className={`text-xl font-semibold mb-4 ${
-          theme === "dark" ? "text-orange-400" : "text-orange-600"
-        }`}
-      >
+      <h2 className={`text-xl font-semibold mb-4 ${themeStyles.titleColor}`}>
         Cart Summary
       </h2>
       <div className="flex justify-between mb-2">

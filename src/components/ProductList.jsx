@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchProducts } from "../store/slices/productSlice";
+import { ThemeContext } from "@/context/ThemeContext"; // Import ThemeContext for theming
+import { fetchProducts } from "@/store/slices/productSlice";
 import ProductCard from "./ProductCard";
 import Loader from "./shared/Loader"; // Path to your Loader component
-import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext for theming
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -17,34 +17,35 @@ const ProductList = () => {
     }
   }, [dispatch, status]);
 
-  // Memoizing the filter message logic
   const filterMessage = useMemo(() => {
-    if (!searchText && !categoryFilter) {
-      return null; // No filter applied
-    }
+    const itemCount = filteredItems.length;
+    const searchTextExists = searchText.trim().length > 0;
+    const categoryFilterExists =
+      categoryFilter && categoryFilter.trim().length > 0;
 
-    // Handle case when no items match the filter
-    if (filteredItems.length === 0) {
-      if (categoryFilter && searchText) {
-        return `We couldn't find any product for ${searchText} inside the ${categoryFilter} category.`;
-      } else if (categoryFilter) {
-        return `We couldn't find any product inside the ${categoryFilter} category.`;
-      } else if (searchText) {
+    // Simplified conditions to check
+    console.log("itemCount:", itemCount);
+    console.log("categoryFilterExists:", categoryFilterExists);
+    console.log("searchTextExists:", searchTextExists);
+
+    switch (true) {
+      case itemCount === 0 && categoryFilterExists && searchTextExists:
+        return `We couldn't find any product for "${searchText}" inside the "${categoryFilter}" category.`;
+      case itemCount === 0 && categoryFilterExists:
+        return `We couldn't find any product inside the "${categoryFilter}" category.`;
+      case itemCount === 0 && searchTextExists:
         return `We couldn't find any product for "${searchText}".`;
-      }
-    } else {
-      // Handle case when there are items that match the filter
-      if (categoryFilter && searchText) {
-        return `For the search ${searchText} inside the ${categoryFilter} category, we found ${filteredItems.length} item(s).`;
-      } else if (categoryFilter) {
-        return `Inside the ${categoryFilter} category, we found ${filteredItems.length} item(s).`;
-      } else if (searchText) {
-        return `For the search ${searchText}, we found ${filteredItems.length} item(s).`;
-      }
+      case itemCount > 0 && categoryFilterExists && searchTextExists:
+        return `For the search "${searchText}" inside the "${categoryFilter}" category, we found ${itemCount} item(s).`;
+      case itemCount > 0 && categoryFilterExists:
+        return `Inside the "${categoryFilter}" category, we found ${itemCount} item(s).`;
+      case itemCount > 0 && searchTextExists:
+        return `For the search "${searchText}", we found ${itemCount} item(s).`;
+      default:
+        return null;
     }
-  }, [filteredItems, searchText, categoryFilter]); // Recalculate if any of these change
+  }, [filteredItems, searchText, categoryFilter]);
 
-  // Early return for loading state, and status failure
   if (status === "loading") {
     return <Loader message="Fetching product details, please wait..." />;
   }
@@ -53,19 +54,16 @@ const ProductList = () => {
     return <div className="text-red-500">Error: {error}</div>;
   }
 
+  const themeStyles = {
+    filterMessage: theme === "dark" ? "text-gray-300" : "text-gray-600",
+  };
+
   return (
     <div>
       {/* Conditional Filter Message with theming */}
       {filterMessage && (
-        <p
-          className={`mb-6 ${
-            theme === "dark" ? "text-gray-300" : "text-gray-600"
-          }`}
-        >
-          {filterMessage}
-        </p>
+        <p className={`mb-6 ${themeStyles.filterMessage}`}>{filterMessage}</p>
       )}
-
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {filteredItems.map((product) => (

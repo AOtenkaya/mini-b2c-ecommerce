@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
 import {
   increaseQuantity,
   decreaseQuantity,
   removeFromCart,
-} from "../store/slices/cartSlice";
-import { Link } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
-import { FaTrash } from "react-icons/fa";
+} from "@/store/slices/cartSlice";
+import { ThemeContext } from "@/context/ThemeContext";
 
 const CartItem = React.memo(({ item }) => {
   const dispatch = useDispatch();
@@ -59,7 +59,6 @@ const CartItem = React.memo(({ item }) => {
               {item.title}
             </h2>
           </Link>
-          {/* Adding space between title and price */}
           <p className="mt-2 text-sm md:text-base font-semibold text-green-600">
             ${item.price}
           </p>
@@ -74,18 +73,15 @@ const CartItem = React.memo(({ item }) => {
         >
           -
         </button>
-
         <span className="text-sm md:text-lg font-semibold">
           {item.quantity}
         </span>
-
         <button
           onClick={handleIncrease}
           className={`rounded-full px-2 py-1 ${themeStyles.buttonColor}`}
         >
           +
         </button>
-
         <button
           onClick={handleRemove}
           className="relative group text-lg md:text-xl"

@@ -20,15 +20,14 @@ const saveCartToLocalStorage = (cart) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
 
-// Async thunk to update the cart on the server
 export const updateCart = createAsyncThunk(
   "cart/updateCart",
   async (cart, { rejectWithValue }) => {
     try {
       const response = await updateCartOnServer(cart);
-      return response; // Return the response data on success
+      return response;
     } catch (error) {
-      return rejectWithValue(error.message); // Return error message on failure
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -38,7 +37,6 @@ const cartSlice = createSlice({
   initialState: getCartFromLocalStorage(),
   reducers: {
     addToCart: (state, action) => {
-      // Save the current state for rollback before making the API call
       state.rollbackCart = current(state);
 
       const newProduct = action.payload;
@@ -54,7 +52,6 @@ const cartSlice = createSlice({
     },
 
     increaseQuantity: (state, action) => {
-      // Save the current state for rollback before making the API call
       state.rollbackCart = current(state);
 
       const productId = action.payload;
@@ -65,7 +62,6 @@ const cartSlice = createSlice({
     },
 
     decreaseQuantity: (state, action) => {
-      // Save the current state for rollback before making the API call
       state.rollbackCart = current(state);
 
       const productId = action.payload;
@@ -76,7 +72,6 @@ const cartSlice = createSlice({
     },
 
     removeFromCart: (state, action) => {
-      // Save the current state for rollback before making the API call
       state.rollbackCart = current(state);
 
       const productId = action.payload;
@@ -86,11 +81,11 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(updateCart.pending, (state) => {
-        state.status = "loading"; // Set loading status while API request is in progress
+        state.status = "loading";
       })
       .addCase(updateCart.fulfilled, (state, action) => {
-        state.status = "succeeded"; // Successful API call
-        saveCartToLocalStorage(state); // Save to localStorage on success
+        state.status = "succeeded";
+        saveCartToLocalStorage(state);
         toast.success("Cart updated successfully!");
       })
       .addCase(updateCart.rejected, (state, action) => {

@@ -2,34 +2,38 @@ import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaSun, FaMoon } from "react-icons/fa";
-import { ThemeContext } from "../context/ThemeContext";
+import { ThemeContext } from "@/context/ThemeContext";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const cartItemsCount = useSelector((state) => state.cart.products.length);
   const location = useLocation();
 
+  const themeStyles = {
+    navbar:
+      theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800",
+    button:
+      theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-800",
+    icon: theme === "dark" ? "text-yellow-400" : "text-gray-800",
+  };
+
   return (
     <nav
-      className={`flex h-14 justify-between items-center px-6 py-4 shadow-md ${
-        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800"
-      }`}
+      className={`flex h-14 justify-between items-center px-6 py-4 shadow-md ${themeStyles.navbar}`}
     >
+      {/* Theme toggle button */}
       <button
         onClick={toggleTheme}
-        className={`flex items-center px-3 py-2 rounded bold ${
-          theme === "dark"
-            ? "bg-gray-700 text-white"
-            : "bg-gray-200 text-gray-800"
-        } hover:opacity-80`}
+        className={`flex items-center px-3 py-2 rounded ${themeStyles.button} hover:opacity-80`}
       >
         {theme === "dark" ? (
-          <FaSun className="h-5 w-5" />
+          <FaSun className={`h-5 w-5 ${themeStyles.icon}`} />
         ) : (
-          <FaMoon className="h-5 w-5" />
+          <FaMoon className={`h-5 w-5 ${themeStyles.icon}`} />
         )}
       </button>
 
+      {/* Navigation links */}
       <div className="flex">
         {location.pathname !== "/products" && (
           <div className="text-xl font-bold mx-6">
