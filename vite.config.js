@@ -4,6 +4,7 @@ import { fileURLToPath, URL } from "node:url";
 import tailwindcss from "tailwindcss";
 
 export default defineConfig({
+  base: "/mini-b2c-ecommerce/",
   plugins: [react()],
   css: {
     postcss: {
