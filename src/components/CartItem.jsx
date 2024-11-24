@@ -8,6 +8,7 @@ import {
   removeFromCart,
 } from "@/store/slices/cartSlice";
 import { ThemeContext } from "@/context/ThemeContext";
+import { formatPrice } from "@/utils/formatPrice";
 
 const CartItem = React.memo(({ item }) => {
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ const CartItem = React.memo(({ item }) => {
             </h2>
           </Link>
           <p className="mt-2 text-sm md:text-base font-semibold text-green-600">
-            ${item.price}
+            {formatPrice(item.price)}
           </p>
         </div>
       </div>

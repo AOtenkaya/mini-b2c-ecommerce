@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useSelector } from "react-redux";
 import { ThemeContext } from "@/context/ThemeContext";
+import { formatPrice } from "@/utils/formatPrice";
 
 const CartSummary = () => {
   const { theme } = useContext(ThemeContext);
@@ -30,7 +31,7 @@ const CartSummary = () => {
       </div>
       <div className="flex justify-between mb-4">
         <span>Total Price:</span>
-        <span>${totalPrice.toFixed(2)}</span>
+        <span>{formatPrice(totalPrice)}</span>
       </div>
     </div>
   );

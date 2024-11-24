@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "@/context/ThemeContext"; // Access theme context
+import { formatPrice } from "@/utils/formatPrice";
 
 const ProductDetails = ({ productResource, onAddToCart }) => {
   const { theme } = useContext(ThemeContext); // Access current theme context
@@ -44,7 +45,7 @@ const ProductDetails = ({ productResource, onAddToCart }) => {
 
           <div className="mt-6">
             <p className={`text-xl font-bold ${themeStyles.priceColor} mt-2`}>
-              ${product.price}
+              {formatPrice(product.price)}
             </p>
             <p className={`text-sm mt-2 ${themeStyles.secondaryTextColor}`}>
               In Stock: {product.stock}

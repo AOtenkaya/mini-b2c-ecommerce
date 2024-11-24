@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/slices/cartSlice";
 import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
+import { formatPrice } from "@/utils/formatPrice";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const ProductCard = ({ product }) => {
           </h3>
 
           <p className={`${themeStyles.priceColor} mt-2 text-md font-bold`}>
-            ${product.price}
+            {formatPrice(product.price)}
           </p>
         </div>
       </Link>
