@@ -18,18 +18,16 @@ const App = () => {
   return (
     <Router>
       <div className={`min-h-screen ${themeClasses}`}>
-        {" "}
-        {/* Simplified theme application */}
         <Navbar />
         <Routes>
           <Route path="/" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>
-        {/* Toast Container with Dynamic Theme */}
         <ToastContainer
+          className={"!top-12"}
           theme={theme === "dark" ? "dark" : "colored"} // Centralized dynamic theme for toast
-          position="top-left"
+          position="top-right"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop
