@@ -16,7 +16,7 @@ const App = () => {
     theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"; // Centralized theming logic
 
   return (
-    <Router>
+    <Router basename={import.meta.env.VITE_APP_BASE_PATH}>
       <div className={`min-h-screen ${themeClasses}`}>
         {" "}
         {/* Simplified theme application */}
