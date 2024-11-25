@@ -2,19 +2,43 @@ import React, { useState, useEffect, useContext, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategoryFilter, setSearchText } from "../store/slices/productSlice";
 import { ThemeContext } from "@/context/ThemeContext";
-import { getCategories } from "@/services/api"; // Assuming getCategories is your API function
-import { createResource } from "@/utils/createResource";
-import Loader from "./shared/Loader"; // Path to your Loader component
-import { getThemeClasses } from "@/utils/themeUtils"; // Import centralized theming utility
-
-// Wrap getCategories with createResource
-const categoryResource = createResource(getCategories);
+import { getCategories } from "@/services/api";
+import Loader from "./shared/Loader";
+import { getThemeClasses } from "@/utils/themeUtils";
 
 const ProductFilter = () => {
-  const { theme } = useContext(ThemeContext); // Access theme from context
+  const { theme } = useContext(ThemeContext);
   const dispatch = useDispatch();
   const { categoryFilter, searchText } = useSelector((state) => state.products);
   const [searchValue, setSearchValue] = useState(searchText);
+  const [categoryResource, setCategoryResource] = useState(null);
+  const [error, setError] = useState(null);
+
+  // Initialize category resource lazily when the component is mounted
+  useEffect(() => {
+    let isMounted = true;
+    import("react").then(({ startTransition }) => {
+      startTransition(() => {
+        getCategories()
+          .then((categories) => {
+            if (isMounted) {
+              setCategoryResource(() => ({
+                read: () => categories,
+              }));
+            }
+          })
+          .catch(() => {
+            if (isMounted) {
+              setError("Failed to load categories.");
+            }
+          });
+      });
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -32,18 +56,15 @@ const ProductFilter = () => {
     dispatch(setSearchText(""));
   };
 
-  const categories = categoryResource.read(); // This will suspend if categories are not ready
-
-  useEffect(() => {
-    // Clear filters when the component unmounts or on route change
-    return () => {
-      dispatch(setSearchText(""));
-      dispatch(setCategoryFilter(null));
-    };
-  }, [dispatch]);
-
-  // Centralized theming logic
   const themeClasses = getThemeClasses(theme);
+
+  if (error) {
+    return (
+      <div className="text-red-500 text-center">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -60,7 +81,7 @@ const ProductFilter = () => {
           placeholder="Search for products..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          onKeyDown={handleKeyDown} // Trigger filtering on Enter key
+          onKeyDown={handleKeyDown}
           className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${themeClasses.input}`}
         />
         {searchValue && (
@@ -74,36 +95,43 @@ const ProductFilter = () => {
       </div>
 
       {/* Category List */}
-      <Suspense
-        fallback={
-          <Loader message="Fetching product categories, please wait..." />
-        }
-      >
-        <ul>
-          <li
-            className={`cursor-pointer mb-2 ${
-              !categoryFilter ? `${themeClasses.orangeTextColor} font-bold` : ""
-            }`}
-            onClick={() => handleCategorySelect(null)}
-          >
-            All Categories
-          </li>
-
-          {categories.map((category) => (
+      {categoryResource ? (
+        <Suspense
+          fallback={
+            <Loader message="Fetching product categories, please wait..." />
+          }
+        >
+          <ul>
             <li
-              key={category}
-              className={`cursor-pointer hover:${
-                themeClasses.categoryText
-              } mb-2 ${
-                categoryFilter === category ? themeClasses.categorySelected : ""
-              } `}
-              onClick={() => handleCategorySelect(category)}
+              className={`cursor-pointer mb-2 ${
+                !categoryFilter
+                  ? `${themeClasses.orangeTextColor} font-bold`
+                  : ""
+              }`}
+              onClick={() => handleCategorySelect(null)}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              All Categories
             </li>
-          ))}
-        </ul>
-      </Suspense>
+            {categoryResource.read().map((category) => (
+              <li
+                key={category}
+                className={`cursor-pointer hover:${
+                  themeClasses.categoryText
+                } mb-2 ${
+                  categoryFilter === category
+                    ? themeClasses.categorySelected
+                    : ""
+                } `}
+                onClick={() => handleCategorySelect(category)}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </li>
+            ))}
+          </ul>
+        </Suspense>
+      ) : (
+        <Loader message="Loading categories..." />
+      )}
     </div>
   );
 };
