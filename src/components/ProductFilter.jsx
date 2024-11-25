@@ -5,6 +5,7 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { getCategories } from "@/services/api"; // Assuming getCategories is your API function
 import { createResource } from "@/utils/createResource";
 import Loader from "./shared/Loader"; // Path to your Loader component
+import { getThemeClasses } from "@/utils/themeUtils"; // Import centralized theming utility
 
 // Wrap getCategories with createResource
 const categoryResource = createResource(getCategories);
@@ -39,32 +40,16 @@ const ProductFilter = () => {
       dispatch(setSearchText(""));
       dispatch(setCategoryFilter(null));
     };
-  }, [location, dispatch]);
+  }, [dispatch]);
 
-  const themeStyles = {
-    input:
-      theme === "dark"
-        ? "bg-gray-700 text-white border-gray-600"
-        : "bg-white text-gray-900 border-gray-300",
-    buttonClear: theme === "dark" ? "text-white" : "text-gray-500",
-    categoryText: theme === "dark" ? "text-orange-400" : "text-orange-600",
-    categorySelected:
-      theme === "dark"
-        ? "font-bold text-orange-400"
-        : "font-bold text-orange-600",
-  };
+  // Centralized theming logic
+  const themeClasses = getThemeClasses(theme);
 
   return (
     <div
-      className={`${
-        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      } shadow-md rounded-lg p-4 h-fit`}
+      className={`shadow-md rounded-lg p-4 h-fit ${themeClasses.cardBackground}`}
     >
-      <h2
-        className={`${
-          theme === "dark" ? "text-orange-400" : "text-orange-600"
-        } text-lg font-bold mb-4`}
-      >
+      <h2 className={`text-lg font-bold mb-4 ${themeClasses.orangeTextColor}`}>
         Filters
       </h2>
 
@@ -76,12 +61,12 @@ const ProductFilter = () => {
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           onKeyDown={handleKeyDown} // Trigger filtering on Enter key
-          className={`${themeStyles.input} w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500`}
+          className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${themeClasses.input}`}
         />
         {searchValue && (
           <button
             onClick={clearSearchText}
-            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeStyles.buttonClear} hover:text-gray-800`}
+            className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${themeClasses.buttonClear} hover:text-gray-800`}
           >
             &#x2715;
           </button>
@@ -97,7 +82,7 @@ const ProductFilter = () => {
         <ul>
           <li
             className={`cursor-pointer mb-2 ${
-              !categoryFilter ? `${themeStyles.categoryText} font-bold` : ""
+              !categoryFilter ? `${themeClasses.orangeTextColor} font-bold` : ""
             }`}
             onClick={() => handleCategorySelect(null)}
           >
@@ -108,10 +93,10 @@ const ProductFilter = () => {
             <li
               key={category}
               className={`cursor-pointer hover:${
-                themeStyles.categoryText
+                themeClasses.categoryText
               } mb-2 ${
-                categoryFilter === category ? themeStyles.categorySelected : ""
-              }`}
+                categoryFilter === category ? themeClasses.categorySelected : ""
+              } `}
               onClick={() => handleCategorySelect(category)}
             >
               {category.charAt(0).toUpperCase() + category.slice(1)}

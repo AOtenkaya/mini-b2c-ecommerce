@@ -5,28 +5,21 @@ import { FaShoppingCart } from "react-icons/fa";
 import CartItem from "@/components/CartItem";
 import CartSummary from "@/components/CartSummary";
 import { ThemeContext } from "@/context/ThemeContext";
+import { getThemeClasses } from "@/utils/themeUtils"; // Import centralized theming utility
 
 const CartPage = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext); // Get current theme
   const cartProducts = useSelector((state) => state.cart.products);
 
   const cartProductsLength = useMemo(() => cartProducts.length, [cartProducts]);
 
-  const themeClasses = useMemo(() => {
-    return {
-      bgColor: theme === "dark" ? "bg-gray-900" : "bg-gray-100",
-      textColor: theme === "dark" ? "text-white" : "text-gray-900",
-      headingColor: theme === "dark" ? "text-orange-400" : "text-orange-600",
-      iconColor: theme === "dark" ? "text-gray-400" : "text-gray-500",
-      linkColor: theme === "dark" ? "text-orange-400" : "text-orange-600",
-    };
-  }, [theme]);
+  const themeClasses = useMemo(() => getThemeClasses(theme), [theme]);
 
   return (
     <div
-      className={`p-6 min-h-[calc(100vh-3.5rem)] flex flex-col items-center ${themeClasses.bgColor} ${themeClasses.textColor}`}
+      className={`p-6 min-h-[calc(100vh-3.5rem)] flex flex-col items-center ${themeClasses.darkerBgColor} ${themeClasses.textColor}`}
     >
-      <h1 className={`text-3xl font-bold mb-6 ${themeClasses.headingColor}`}>
+      <h1 className={`text-3xl font-bold mb-6 ${themeClasses.orangeTextColor}`}>
         My Cart
       </h1>
       {cartProductsLength === 0 ? (
@@ -37,7 +30,10 @@ const CartPage = () => {
           <p className="text-lg mb-2">Your cart is empty right now.</p>
           <p className="text-lg">
             You can go to{" "}
-            <Link to="/" className={`font-bold ${themeClasses.linkColor}`}>
+            <Link
+              to="/"
+              className={`font-bold ${themeClasses.orangeTextColor}`}
+            >
               Products
             </Link>{" "}
             and start shopping.

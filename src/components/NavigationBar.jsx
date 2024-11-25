@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { ThemeContext } from "@/context/ThemeContext";
 
-const Navbar = () => {
+const NavigationBar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const cartItemsCount = useSelector((state) => state.cart.products.length);
   const location = useLocation();
@@ -79,4 +79,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavigationBar;

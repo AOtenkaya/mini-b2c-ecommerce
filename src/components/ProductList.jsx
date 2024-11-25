@@ -4,6 +4,7 @@ import { ThemeContext } from "@/context/ThemeContext"; // Import ThemeContext fo
 import { fetchProducts } from "@/store/slices/productSlice";
 import ProductCard from "./ProductCard";
 import Loader from "./shared/Loader"; // Path to your Loader component
+import { getThemeClasses } from "@/utils/themeUtils"; // Import the centralized theming utility
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -42,22 +43,23 @@ const ProductList = () => {
   }, [filteredItems, searchText, categoryFilter]);
 
   if (status === "loading") {
-    return <Loader message="Fetching product details, please wait..." />;
+    return <Loader message="Fetching product list, please wait..." />;
   }
 
   if (status === "failed") {
     return <div className="text-red-500">Error: {error}</div>;
   }
 
-  const themeStyles = {
-    filterMessage: theme === "dark" ? "text-gray-300" : "text-gray-600",
-  };
+  // Centralized theming logic
+  const themeClasses = getThemeClasses(theme);
 
   return (
     <div>
       {/* Conditional Filter Message with theming */}
       {filterMessage && (
-        <p className={`mb-6 ${themeStyles.filterMessage}`}>{filterMessage}</p>
+        <p className={`mb-6 font-bold ${themeClasses.textColor}`}>
+          {filterMessage}
+        </p>
       )}
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-3">

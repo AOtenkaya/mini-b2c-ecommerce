@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useSelector } from "react-redux";
 import { ThemeContext } from "@/context/ThemeContext";
 import { formatPrice } from "@/utils/formatPrice";
+import { getThemeClasses } from "@/utils/themeUtils"; // Importing the utility for centralized theming
 
 const CartSummary = () => {
   const { theme } = useContext(ThemeContext);
@@ -12,17 +13,14 @@ const CartSummary = () => {
     0
   );
 
-  const themeStyles = {
-    backgroundColor:
-      theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-800",
-    titleColor: theme === "dark" ? "text-orange-400" : "text-orange-600",
-  };
+  // Centralized theming logic
+  const themeClasses = getThemeClasses(theme);
 
   return (
-    <div
-      className={`h-fit p-4 rounded-lg shadow-md ${themeStyles.backgroundColor}`}
-    >
-      <h2 className={`text-xl font-semibold mb-4 ${themeStyles.titleColor}`}>
+    <div className={`h-fit p-4 rounded-lg shadow-md ${themeClasses.bgColor}`}>
+      <h2
+        className={`text-xl font-semibold mb-4 ${themeClasses.orangeTextColor}`}
+      >
         Cart Summary
       </h2>
       <div className="flex justify-between mb-2">

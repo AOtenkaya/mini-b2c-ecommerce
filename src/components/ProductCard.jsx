@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/slices/cartSlice";
 import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
+import { getThemeClasses } from "@/utils/themeUtils"; // Import the utility for centralized theming
 import { formatPrice } from "@/utils/formatPrice";
 
 const ProductCard = ({ product }) => {
@@ -13,20 +14,12 @@ const ProductCard = ({ product }) => {
     dispatch(addToCart(product));
   };
 
-  const themeStyles = {
-    cardBackground:
-      theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900",
-    priceColor: theme === "dark" ? "text-green-400" : "text-green-600",
-    buttonBackground:
-      theme === "dark"
-        ? "bg-orange-500 hover:bg-orange-600"
-        : "bg-orange-500 hover:bg-orange-600",
-    titleColor: theme === "dark" ? "text-white" : "text-gray-900",
-  };
+  // Centralized theming logic
+  const themeClasses = getThemeClasses(theme);
 
   return (
     <div
-      className={`group ${themeStyles.cardBackground} rounded-lg shadow-lg p-4 hover:shadow-2xl transition-all`}
+      className={`group ${themeClasses.cardBackground} rounded-lg shadow-lg p-4 hover:shadow-2xl transition-all`}
     >
       <Link to={`/product/${product.id}`}>
         <img
@@ -37,12 +30,12 @@ const ProductCard = ({ product }) => {
 
         <div className="mt-4">
           <h3
-            className={`${themeStyles.titleColor} text-lg font-semibold truncate`}
+            className={`${themeClasses.titleColor} text-lg font-semibold truncate`}
           >
             {product.title}
           </h3>
 
-          <p className={`${themeStyles.priceColor} mt-2 text-md font-bold`}>
+          <p className={`${themeClasses.priceColor} mt-2 text-md font-bold`}>
             {formatPrice(product.price)}
           </p>
         </div>
@@ -51,7 +44,7 @@ const ProductCard = ({ product }) => {
       {/* Button */}
       <button
         onClick={handleAddToCart}
-        className={`group-hover:visible mt-4 w-full text-white p-2 rounded-lg transition-colors visible lg:invisible  ${themeStyles.buttonBackground}`}
+        className={`group-hover:visible mt-4 w-full text-white p-2 rounded-lg transition-colors visible lg:invisible ${themeClasses.buttonColor}`}
       >
         Add to Cart
       </button>
