@@ -1,22 +1,14 @@
-import React, { useEffect, useMemo, useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useMemo, useContext } from "react";
+import { useSelector } from "react-redux";
 import { ThemeContext } from "@/context/ThemeContext"; // Import ThemeContext for theming
-import { fetchProducts } from "@/store/slices/productSlice";
 import ProductCard from "./ProductCard";
 import Loader from "./shared/Loader"; // Path to your Loader component
 import { getThemeClasses } from "@/utils/themeUtils"; // Import the centralized theming utility
 
 const ProductList = () => {
-  const dispatch = useDispatch();
   const { filteredItems, status, error, searchText, categoryFilter } =
     useSelector((state) => state.products);
   const { theme } = useContext(ThemeContext); // Access theme from context
-
-  useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchProducts());
-    }
-  }, [dispatch, status]);
 
   const filterMessage = useMemo(() => {
     const itemCount = filteredItems.length;
@@ -50,18 +42,15 @@ const ProductList = () => {
     return <div className="text-red-500">Error: {error}</div>;
   }
 
-  // Centralized theming logic
   const themeClasses = getThemeClasses(theme);
 
   return (
     <div>
-      {/* Conditional Filter Message with theming */}
       {filterMessage && (
         <p className={`mb-6 font-bold ${themeClasses.textColor}`}>
           {filterMessage}
         </p>
       )}
-      {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-3">
         {filteredItems.map((product) => (
           <ProductCard key={product.id} product={product} />

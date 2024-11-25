@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useMemo } from "react";
+import React, { useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
 import ProductList from "@/components/ProductList";
 import ProductFilter from "@/components/ProductFilter";
