@@ -19,11 +19,9 @@ const handleError = (error) => {
   }
 };
 
-export const fetchProductsAPI = async (searchQuery = "") => {
+export const fetchProductsAPI = async () => {
   try {
-    const response = await axiosInstance.get(`/products`, {
-      params: { search: searchQuery },
-    });
+    const response = await axiosInstance.get(`/products`);
     return response.data;
   } catch (error) {
     handleError(error);
