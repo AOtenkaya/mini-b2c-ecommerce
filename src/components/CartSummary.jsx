@@ -17,7 +17,9 @@ const CartSummary = () => {
   const themeClasses = getThemeClasses(theme);
 
   return (
-    <div className={`h-fit p-4 rounded-lg shadow-md ${themeClasses.bgColor}`}>
+    <div
+      className={`h-fit p-4 rounded-lg shadow-md ${themeClasses.cardBackground}`}
+    >
       <h2
         className={`text-xl font-semibold mb-4 ${themeClasses.orangeTextColor}`}
       >
