@@ -9,13 +9,12 @@ import {
 } from "@/store/slices/cartSlice";
 import { ThemeContext } from "@/context/ThemeContext";
 import { formatPrice } from "@/utils/formatPrice";
-import { getThemeClasses } from "@/utils/themeUtils"; // Importing the utility for centralized theming
+import { getThemeClasses } from "@/utils/themeUtils";
 
 const CartItem = React.memo(({ item }) => {
   const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
 
-  // Centralized theming logic
   const themeClasses = getThemeClasses(theme);
 
   const handleIncrease = () => {
@@ -38,16 +37,13 @@ const CartItem = React.memo(({ item }) => {
     <div
       className={`flex flex-col md:flex-row items-start md:items-center justify-between ${themeClasses.cardBackground} p-4 rounded-lg shadow-md mb-4`}
     >
-      {/* Left Section: Product Image and Title */}
       <div className="flex items-start md:items-center space-x-4 w-full">
-        {/* Product Image */}
         <img
           src={item.image}
           alt={item.title}
           className="w-16 h-16 object-fill rounded-md"
         />
 
-        {/* Product Title and Price */}
         <div className="flex-1">
           <Link to={`/product/${item.id}`} className="block">
             <h2 className="text-base md:text-lg font-semibold w-full break-words whitespace-normal">
@@ -62,7 +58,6 @@ const CartItem = React.memo(({ item }) => {
         </div>
       </div>
 
-      {/* Right Section: Quantity Controls and Remove Button */}
       <div className="flex items-center space-x-4 mt-4 md:mt-0">
         <button
           onClick={handleDecrease}
